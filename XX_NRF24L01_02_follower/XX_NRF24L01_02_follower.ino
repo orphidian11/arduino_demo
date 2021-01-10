@@ -18,6 +18,10 @@
 
 #define LEADER_ADDRESS 1
 #define FOLLOWER_ADDRESS 2
+#define BUZZ_PIN 7
+
+const int BUZZ_US = 900; // microsecond interval
+const int BUZZ_DURATION = 500;// buzz duration
 
 RH_NRF24 driver;
 RHReliableDatagram nrf24(driver, FOLLOWER_ADDRESS);
@@ -42,6 +46,7 @@ void loop() {
       Serial.print("dir: " + String(cmd[0])); // Serial.print("dir: "); // 
       Serial.print(" / spd: " + String(cmd[1])); // Serial.print(" / spd: "); // 
       Serial.println(" / dur: " + String(cmd[2])); // Serial.println(" / dur: "); // 
+//      emitBuzzer();
     }
 
     // note: check if a response can be sent even if no command was received
@@ -59,4 +64,17 @@ void loop() {
     }
   }
 
+}
+
+void emitBuzzer(){
+  int currMs;
+  int startMs = millis();
+  do {
+    digitalWrite(BUZZ_PIN, HIGH);
+    delayMicroseconds(BUZZ_US);
+    digitalWrite(BUZZ_PIN, LOW);
+    delayMicroseconds(BUZZ_US);
+    currMs = millis();
+    Serial.println("emitBuzzer " + String(currMs - startMs) + " / " + String(BUZZ_DURATION));
+  } while ((currMs - startMs) < BUZZ_DURATION);
 }
